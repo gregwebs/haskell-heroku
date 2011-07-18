@@ -1,0 +1,24 @@
+Name:                heroku
+Version:             0.1
+Synopsis:            helpers for deploying to Heroku
+-- A longer description of the package.
+-- Description:         
+Homepage:            https://github.com/gregwebs/haskell-heroku
+License:             BSD3
+License-file:        LICENSE
+Author:              Greg Weber
+Maintainer:          greg@gregweber.info
+
+-- A copyright notice.
+-- Copyright:           
+Category:            Web
+Build-type:          Simple
+
+Cabal-version:       >=1.2
+
+
+Library
+  -- Modules exported by the library.
+  Exposed-modules:     Web.Heroku
+  
+  Build-depends: base, text, network
