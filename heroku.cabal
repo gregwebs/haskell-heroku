@@ -16,4 +16,6 @@ Cabal-version:       >=1.2
 Library
   Exposed-modules:     Web.Heroku
   
-  Build-depends: base, text, network
+  Build-depends: base >= 4 && < 5
+               , text
+               , network
