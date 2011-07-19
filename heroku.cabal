@@ -1,16 +1,12 @@
 Name:                heroku
 Version:             0.1
 Synopsis:            helpers for deploying to Heroku
--- A longer description of the package.
--- Description:         
+Description:         currently just a parser for DATABASE_URL
 Homepage:            https://github.com/gregwebs/haskell-heroku
 License:             BSD3
 License-file:        LICENSE
 Author:              Greg Weber
 Maintainer:          greg@gregweber.info
-
--- A copyright notice.
--- Copyright:           
 Category:            Web
 Build-type:          Simple
 

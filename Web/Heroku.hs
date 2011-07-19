@@ -5,8 +5,8 @@ module Web.Heroku (
 
 import System.Environment
 import Network.URI
-import Data.Text hiding (init)
-import Prelude hiding (tail)
+import Data.Text
+import Prelude
 
 -- | read the DATABASE_URL environment variable
 -- and return an alist of connection parameters with the following keys:
@@ -30,16 +30,17 @@ parseDatabaseUrl durl =
   in     [
           (pack "user",     user)
           -- tail not safe, but should be there on Heroku
-         ,(pack "password", tail password)
+         ,(pack "password", Data.Text.tail password)
          ,(pack "host",     pack $ uriRegName auth)
          -- Heroku should use default port
          -- ,(pack "port",     pack $ uriPort auth)
-         ,(pack "dbname",   pack $ path)
+         -- tail not safe but path should always be there
+         ,(pack "dbname",   pack $ Prelude.tail $ path)
          ]
   where
     -- init is not safe, but should be there on Heroku
     userAndPassword :: URIAuth -> (Text, Text)
-    userAndPassword = (breakOn $ pack ":") . pack . init . uriUserInfo
+    userAndPassword = (breakOn $ pack ":") . pack . Prelude.init . uriUserInfo
 
     schemeError uri = error $ "was expecting a postgres scheme, not: " ++ (uriScheme uri) ++ "\n" ++ (show uri)
     -- should be an error 
