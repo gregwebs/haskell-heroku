@@ -1,8 +1,12 @@
-module Web.Heroku ( dbConnParams ) where
+module Web.Heroku ( 
+    dbConnParams 
+  , parseDatabaseUrl
+  ) where
 
 import System.Environment
 import Network.URI
-import Data.Text
+import Data.Text hiding (init)
+import Prelude hiding (tail)
 
 -- | read the DATABASE_URL environment variable
 -- and return an alist of connection parameters with the following keys:
@@ -10,26 +14,33 @@ import Data.Text
 --
 -- warning: just calls error if it can't parse correctly
 dbConnParams :: IO [(Text, Text)]
-dbConnParams = do
-  durl <- getEnv "DATABASE_URL"
+dbConnParams = getEnv "DATABASE_URL" >>= return . parseDatabaseUrl
+
+parseDatabaseUrl :: String -> [(Text, Text)]
+parseDatabaseUrl durl =
   let muri = parseAbsoluteURI durl
-  let (auth, path) = case muri of
-                      Nothing ->  invalid
-                      Just uri -> if uriScheme uri /= "postgres" then invalid
+      (auth, path) = case muri of
+                      Nothing ->  error "couldn't parse absolute uri"
+                      Just uri -> if uriScheme uri /= "postgres:"
+                                    then schemeError uri
                                     else case uriAuthority uri of
                                            Nothing   -> invalid
                                            Just a -> (a, uriPath uri)
-  let (user,password) = userAndPassword auth
-  return [
+      (user,password) = userAndPassword auth
+  in     [
           (pack "user",     user)
-         ,(pack "password", password)
+          -- tail not safe, but should be there on Heroku
+         ,(pack "password", tail password)
          ,(pack "host",     pack $ uriRegName auth)
-         ,(pack "port",     pack $ uriPort auth)
+         -- Heroku should use default port
+         -- ,(pack "port",     pack $ uriPort auth)
          ,(pack "dbname",   pack $ path)
          ]
   where
-    -- userAndPassword :: UriAuth -> String
-    userAndPassword = (breakOn $ pack ":") . pack . uriUserInfo
+    -- init is not safe, but should be there on Heroku
+    userAndPassword :: URIAuth -> (Text, Text)
+    userAndPassword = (breakOn $ pack ":") . pack . init . uriUserInfo
 
+    schemeError uri = error $ "was expecting a postgres scheme, not: " ++ (uriScheme uri) ++ "\n" ++ (show uri)
     -- should be an error 
     invalid = error "could not parse heroku DATABASE_URL"
