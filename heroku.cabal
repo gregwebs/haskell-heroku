@@ -1,5 +1,5 @@
 Name:                heroku
-Version:             0.1
+Version:             0.1.1
 Synopsis:            helpers for deploying to Heroku
 Description:         currently just a parser for DATABASE_URL
 Homepage:            https://github.com/gregwebs/haskell-heroku
