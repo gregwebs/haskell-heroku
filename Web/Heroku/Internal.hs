@@ -32,8 +32,7 @@ parseDatabaseUrl' scheme durl =
           -- tail not safe, but should be there on Heroku
          ,(pack "password", Data.Text.tail password)
          ,(pack "host",     pack $ uriRegName auth)
-         -- Heroku should use default port
-         -- ,(pack "port",     pack $ uriPort auth)
+         ,(pack "port",     pack $ uriPort auth)
          -- tail not safe but path should always be there
          ,(pack "dbname",   pack $ Prelude.tail $ path)
          ]
