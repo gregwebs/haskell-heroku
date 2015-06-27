@@ -17,12 +17,15 @@ Library
   Exposed-modules: Web.Heroku
                  , Web.Heroku.Postgres
                  , Web.Heroku.MongoDB
+                 , Web.Heroku.RabbitMQ
 
   Other-modules: Web.Heroku.Internal
   
   Build-depends: base >= 4 && < 5
                , text
                , network-uri
+               , split
+               , amqp
 
 Test-Suite test
   Type:                 exitcode-stdio-1.0
@@ -31,3 +34,5 @@ Test-Suite test
                , text
                , network-uri
                , hspec
+               , amqp
+               , split
