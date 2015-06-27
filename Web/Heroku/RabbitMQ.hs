@@ -10,9 +10,9 @@ import System.Environment
 
 data AmqpSettings = AmqpSettings
     { amqpHostName    :: String
-    , amqpVirtualHost :: String
-    , amqpUser        :: String
-    , amqpPass        :: String
+    , amqpVirtualHost :: Text
+    , amqpUser        :: Text
+    , amqpPass        :: Text
     , amqpPort        :: Int 
     } deriving (Show, Eq)
 
@@ -28,7 +28,7 @@ parseAmqpUrl = parse . pieces "" [] . trimProtocol
           , host
           , port
           , vhst 
-          ] = AmqpSettings host vhst user pass (read port)
+          ] = AmqpSettings host (pack vhst) (pack user) (pack pass) (read port)
     parse _ = error "Unexpected environment variable format."
 
     trimProtocol :: String -> String
