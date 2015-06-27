@@ -1,16 +1,11 @@
-{-# LANGUAGE RecordWildCards #-}
 module Web.Heroku.RabbitMQ 
-  ( module Network.AMQP
-  , AmqpSettings(..)
+  ( AmqpSettings(..)
   , amqpConnSettings
   , parseAmqpUrl
-  , openAmqpConnection
   ) where
 
 import Control.Monad
-import Data.List.Split
-import Data.Text
-import Network.AMQP
+import Data.Text ( Text, pack )
 import System.Environment
 
 data AmqpSettings = AmqpSettings
@@ -25,7 +20,7 @@ amqpConnSettings :: IO AmqpSettings
 amqpConnSettings = liftM parseAmqpUrl (getEnv "RABBITMQ_BIGWIG_URL")
 
 parseAmqpUrl :: String -> AmqpSettings
-parseAmqpUrl = parse . splitOneOf "@:/" . trimProtocol
+parseAmqpUrl = parse . pieces "" [] . trimProtocol
   where
     parse :: [String] -> AmqpSettings
     parse [ user
@@ -40,13 +35,8 @@ parseAmqpUrl = parse . splitOneOf "@:/" . trimProtocol
     trimProtocol ('a':'m':'q':'p':':':'/':'/':rest) = rest
     trimProtocol str = str
 
-openAmqpConnection :: IO Connection
-openAmqpConnection = 
-     amqpConnSettings >>= \AmqpSettings{..} -> 
-        openConnection' 
-            amqpHostName 
-            (fromIntegral amqpPort)
-            (pack amqpVirtualHost)
-            (pack amqpUser) 
-            (pack amqpPass)
+    pieces acc ys [] = reverse (reverse acc:ys)
+    pieces acc ys (x:xs) 
+        | x `elem` "@:/" = pieces "" (reverse acc:ys) xs 
+        | otherwise = pieces (x:acc) ys xs 
 
