@@ -9,11 +9,11 @@ import Data.Text ( Text, pack )
 import System.Environment
 
 data AmqpSettings = AmqpSettings
-    { amqpHostName    :: String
-    , amqpVirtualHost :: Text
-    , amqpUser        :: Text
-    , amqpPass        :: Text
-    , amqpPort        :: Int 
+    { amqpHostName    :: !String
+    , amqpVirtualHost :: !Text
+    , amqpUser        :: !Text
+    , amqpPass        :: !Text
+    , amqpPort        :: !Int 
     } deriving (Show, Eq)
 
 amqpConnSettings :: IO AmqpSettings
