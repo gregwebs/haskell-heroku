@@ -17,6 +17,7 @@ Library
   Exposed-modules: Web.Heroku
                  , Web.Heroku.Postgres
                  , Web.Heroku.MongoDB
+                 , Web.Heroku.RabbitMQ
 
   Other-modules: Web.Heroku.Internal
   
